@@ -1,3 +1,7 @@
+// the first section contains all the data variables we discussed
+// to keep track of the information we need to make the game work
+// the initial values are reset when initializePositions()
+// is called
 var GAMESTATE = 'START'; // 'PLAY', 'POINT', 'GAMEOVER'
 
 var score = {
@@ -42,10 +46,12 @@ var keypress = {
   l: false, // down player 2
   spacebar: false // start signal for game 
 }
- 
+
+// the preload function is empty for now.  this is where you can load mp3 
+// sounds to play when the game state enters GAME OVER and POINT.  
 function preload() {
-  song = loadSound('point.mp3');
-  pointsound = loadSound('bubble.mp3');
+  song = loadSound('bubble.mp3');
+  pointsound = loadSound('point.mp3');
   gameoversound = loadSound('slide.mp3');
 }
 
@@ -66,7 +72,9 @@ function draw() {
   drawStuff(); // displays the game elements (and produces the sounds)
 }
 
-
+// this function gathers input from the keyboard and saves
+// it in our data structure so that the rest of the functions can 
+// access it quickly
 function checkInput() {
   // check is key w down?
   if (keyIsDown(87)) {
@@ -101,11 +109,7 @@ function checkInput() {
   }
 }
 
-// this function updates the game state and the data that we use to simulate the game.
-// it is the "logic" of the game.  
-// Please modify this function so that the game 
-// ENDS when one player reaches a particular score.
-// and display text saying which player has won
+
 function updateState() {
   if (GAMESTATE == 'START') {
     initializePositions();
@@ -141,9 +145,7 @@ function updateState() {
       paddle2.y = paddle2.y + 3;
     }
 
-    // check top/bottom boundaries and reverse yvelocity 
-    // you may want to modify this so that the paddles remain on the screen
-    // hint: what does the "constrain()" function do.
+
     if (ball.y < borders.topy) {
       ball.yvelocity = -ball.yvelocity;
       song.play();
@@ -153,10 +155,6 @@ function updateState() {
       song.play();
     }
 
-    // this checks if the ball goes out of bounds on the left or right.
-    // if the paddle is there, the ball reverses direction but if its not
-    // the other player gets a point and the gamestate changes.  you may want to change this 
-    // so that the ball location that is used is the CENTER of the ball and not the upper left corner
     if (ball.x > borders.rightx) {
       if ((ball.y > paddle2.y) &&
         (ball.y < (paddle2.y + paddle2.length))) {
@@ -187,28 +185,14 @@ function updateState() {
   }
 }
 
-// "rendering" function, produces the output that the user will get... sounds and visuals 
-// right now it only does the drawing!  
-//
-// you may want to update this so that it plays sounds  
-// for ball bounces:  hint: i initialized an oscillator (osc) in setup for you. use millis() to log the 
-// start time and turn the oscillator back off after a fixed duration of time has passed.   this may require
-// some new variables to track the sound timing information  
-//  
-// may want to use preloaded sounds from mp3 files (which you load into variables gameoversound and  pointsound)
-// and play them when the game enters a POINT or GAMEOVER state.  as with the ball bounce sound you 
-// will want to track some state for the sound file, so that you dont keep starting it while waiting for the spacebar 
-// to be pressed
-// 
-// you may also want to change the logic here so the ball does not 
-// appear while you are waiting for the space bar to start the game play 
+
 function drawStuff() {
   background(200);
   // draw paddles
-  fill(255)
+  fill(250)
 
   push();
-  fill(240, 0, 0)
+  fill(160, 200, 105)
   rect(paddle1.x, paddle1.y, paddle1.width,
     paddle1.length);
   rect(paddle2.x, paddle2.y, paddle2.width,
@@ -250,8 +234,6 @@ function drawStuff() {
   }
 }
 
-// this initializes the ball and paddle positions at the beginning of a point.  you
-// should change this to randomize ball position and velocity each time so the game is more interesting!!
 function initializePositions() {
   ball.x = width / 2;
   ball.y = height + 10;
