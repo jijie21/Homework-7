@@ -49,16 +49,17 @@ var ballFrqes = 175;
 var playing = false;
 var osc, fft;
 
-// var song = 0;
+var song;
 
 // the preload function is empty for now.  this is where you can load mp3 
 // sounds to play when the game state enters GAME OVER and POINT.  
-//function preload() {
-//song = loadSound('point.mp3');
-//}
+function preload() {
+song = loadSound('point.mp3');
+}
 
 function setup() {
   createCanvas(400, 400);
+  song = loadSound('point.mp3');
 
   osc = new p5.TriOsc(); // set frequency and type
   osc.amp(.5);
@@ -148,12 +149,13 @@ function updateState() {
       GAMESTATE = 'PLAY';
     }
   } else if (GAMESTATE == 'GAMEOVER') {
-      ball.osc.amp(0.5);
-      ball.playing = true;
-      playing = true;
+      // ball.osc.amp(0.5);
+      // ball.playing = true;
+      // playing = true;
     //song.play();
     if (keypress.spacebar == true) {
       GAMESTATE = 'START';
+      song.play();
     }
   } else if (GAMESTATE == 'PLAY') {
     // move ball 
@@ -260,7 +262,10 @@ function drawStuff() {
     textAlign(CENTER);
     text('press SPACEBAR to continue', width / 2, height / 2);
   } else if (GAMESTATE == 'GAMEOVER') {
-    song.play(); // play gamesound
+    ball.osc.amp(0.5);
+      ball.playing = true;
+      playing = true;
+      setTimeout(ball, 1000);
     textAlign(CENTER);
     text('GAMEOVER', width / 2, height / 2); // text GAME OVER and WINNER!
   }
