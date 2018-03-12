@@ -1,7 +1,3 @@
-// the first section contains all the data variables we discussed
-// to keep track of the information we need to make the game work
-// the initial values are reset when initializePositions()
-// is called
 var GAMESTATE = 'START'; // 'PLAY', 'POINT', 'GAMEOVER'
 
 var score = {
@@ -176,15 +172,16 @@ function updateState() {
         song.play();
       } else if (score.player1 >=5||score.player2 >=5) {
         GAMESTATE = 'GAMEOVER';
+        text('player1 win');
       }else {
         score.player2 = score.player2 + 1;
         GAMESTATE = 'POINT';
+        text('player2 win');
         pointsound.play();
       }
     }
   }
 }
-
 
 function drawStuff() {
   background(200);
@@ -227,7 +224,7 @@ function drawStuff() {
     // play gamesound
     // text GAME OVER and WINNER!
     textAlign(CENTER);
-    text('GAMEOVER', width / 2, height / 2);
+    text('GAMEOVER, PLAYER1 WIN', width / 2, height / 2);
     gameoversound.play(); 
 
 
@@ -237,8 +234,8 @@ function drawStuff() {
 function initializePositions() {
   ball.x = width / 2;
   ball.y = height + 10;
-  ball.xvelocity = random(-2,2); // probably should randomize this somehow
-  ball.yvelocity = random(-2,2);
+  ball.xvelocity = random(0,8); // probably should randomize this somehow
+  ball.yvelocity = random(0,8);
 
   borders.leftx = 50;
   borders.rightx = width - 50;
