@@ -192,7 +192,7 @@ function drawStuff() {
   fill(250)
 
   push();
-  fill(160, 200, 105)
+  fill(255, 200, 105)
   rect(paddle1.x, paddle1.y, paddle1.width,
     paddle1.length);
   rect(paddle2.x, paddle2.y, paddle2.width,
