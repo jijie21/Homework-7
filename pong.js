@@ -1,19 +1,18 @@
-// the first section contains all the data variables we discussed
-// to keep track of the information we need to make the game work
-// the initial values are reset when initializePositions()
-// is called
 var GAMESTATE = 'START'; // 'PLAY', 'POINT', 'GAMEOVER'
+
 var score = {
   player1: 0,
-  player2: 0
+  player2: 0,
 }
+
 var ball = {
-  x: 2,
-  y: 2,
+  x: 0,
+  y: 0,
   xvelocity: 2,
   yvelocity: 2,
   size: 20
 }
+
 var paddle1 = {
   x: 100,
   y: 100,
@@ -24,15 +23,18 @@ var paddle2 = {
   x: 20,
   y: 20,
   width: 10,
-  length: 80
+  length: 80,
 }
+
 var gameoversound, pointsound, osc;
+
 var borders = {
   leftx: 0,
   rightx: 0,
   topy: 0,
   bottomy: 0
 }
+
 var keypress = {
   w: false, // up player 1 
   s: false, // down player 1
@@ -40,43 +42,21 @@ var keypress = {
   l: false, // down player 2
   spacebar: false // start signal for game 
 }
-
-var ballHeight;
-var ballVelocityX;
-var ballVelocityY;
-
-var ballFrqes = 175;
-var playing = false;
-var osc, fft;
-
-var song;
-
-// the preload function is empty for now.  this is where you can load mp3 
-// sounds to play when the game state enters GAME OVER and POINT.  
+ 
 function preload() {
-song = loadSound('point.mp3');
+  song = loadSound('point.mp3');
+  pointsound = loadSound('bubble.mp3');
+  gameoversound = loadSound('slide.mp3');
 }
 
 function setup() {
   createCanvas(400, 400);
-  song = loadSound('point.mp3');
-
-  osc = new p5.TriOsc(); // set frequency and type
-  osc.amp(.5);
-
-  fft = new p5.FFT();
-  osc.start();
-
   // i added some code here to initialize an oscillator!!!
   osc = new p5.Oscillator();
   osc.setType('sine');
   osc.freq(240);
   osc.amp(0);
   osc.start();
-
-  ballHeight = random(100, height - 50);
-  ballVelocityX = 2;
-  ballVelocityY = 2;
 }
 
 // this mainloop contains the three functions that do everything that our program will do
@@ -86,9 +66,7 @@ function draw() {
   drawStuff(); // displays the game elements (and produces the sounds)
 }
 
-// this function gathers input from the keyboard and saves
-// it in our data structure so that the rest of the functions can 
-// access it quickly
+
 function checkInput() {
   // check is key w down?
   if (keyIsDown(87)) {
@@ -134,28 +112,17 @@ function updateState() {
     // wait for spacebar
     if (keypress.spacebar == true) {
       GAMESTATE = 'PLAY';
-    }
+      ball.y=random(borders.topy,borders.bottomy);
+       }
   } else if (GAMESTATE == 'POINT') {
-    //reposition the ball
-    ballHeight = random(100, height - 50);
-    //update ball x velocity
-    ballVelocityX = random(-3, 3);
-    //update ball y velocity
-    ballVelocityY = random(-3, 3);
-
-    //update the ball's initial position
-    GAMESTATE = 'START';
+    initializePositions();
     if (keypress.spacebar == true) {
       GAMESTATE = 'PLAY';
+      ball.y=random(borders.topy,borders.bottomy);  
     }
   } else if (GAMESTATE == 'GAMEOVER') {
-      // ball.osc.amp(0.5);
-      // ball.playing = true;
-      // playing = true;
-    //song.play();
     if (keypress.spacebar == true) {
       GAMESTATE = 'START';
-      song.play();
     }
   } else if (GAMESTATE == 'PLAY') {
     // move ball 
@@ -179,9 +146,11 @@ function updateState() {
     // hint: what does the "constrain()" function do.
     if (ball.y < borders.topy) {
       ball.yvelocity = -ball.yvelocity;
+      song.play();
     }
     if (ball.y > borders.bottomy) {
       ball.yvelocity = -ball.yvelocity;
+      song.play();
     }
 
     // this checks if the ball goes out of bounds on the left or right.
@@ -192,18 +161,27 @@ function updateState() {
       if ((ball.y > paddle2.y) &&
         (ball.y < (paddle2.y + paddle2.length))) {
         ball.xvelocity = -ball.xvelocity;
-      } else {
+        song.play();
+      } else if (score.player1 >=5||score.player2 >=5) {
+        GAMESTATE = 'GAMEOVER';
+       } else {
         score.player1 = score.player1 + 1;
         GAMESTATE = 'POINT';
+        pointsound.play();
+        
       }
     }
     if (ball.x < borders.leftx) {
       if ((ball.y > paddle1.y) &&
         (ball.y < (paddle1.y + paddle1.length))) {
         ball.xvelocity = -ball.xvelocity;
-      } else {
+        song.play();
+      } else if (score.player1 >=5||score.player2 >=5) {
+        GAMESTATE = 'GAMEOVER';
+      }else {
         score.player2 = score.player2 + 1;
         GAMESTATE = 'POINT';
+        pointsound.play();
       }
     }
   }
@@ -225,12 +203,12 @@ function updateState() {
 // you may also want to change the logic here so the ball does not 
 // appear while you are waiting for the space bar to start the game play 
 function drawStuff() {
-  background(0);
+  background(200);
   // draw paddles
   fill(255)
 
   push();
-  fill(255, 173, 5)
+  fill(240, 0, 0)
   rect(paddle1.x, paddle1.y, paddle1.width,
     paddle1.length);
   rect(paddle2.x, paddle2.y, paddle2.width,
@@ -262,13 +240,13 @@ function drawStuff() {
     textAlign(CENTER);
     text('press SPACEBAR to continue', width / 2, height / 2);
   } else if (GAMESTATE == 'GAMEOVER') {
-    // ball.osc.amp(0.5);
-    //   ball.playing = true;
-    //   playing = true;
-    //   setTimeout(ball, 1000);
-    song.play();
+    // play gamesound
+    // text GAME OVER and WINNER!
     textAlign(CENTER);
-    text('GAMEOVER', width / 2, height / 2); // text GAME OVER and WINNER!
+    text('GAMEOVER', width / 2, height / 2);
+    gameoversound.play(); 
+
+
   }
 }
 
@@ -276,11 +254,9 @@ function drawStuff() {
 // should change this to randomize ball position and velocity each time so the game is more interesting!!
 function initializePositions() {
   ball.x = width / 2;
-  //random height in the middle
-  ball.y = ballHeight;
-  //ball.y = height / 2;
-  ball.xvelocity = ballVelocityX; // probably should randomize this somehow
-  ball.yvelocity = ballVelocityY;
+  ball.y = height + 10;
+  ball.xvelocity = random(-2,2); // probably should randomize this somehow
+  ball.yvelocity = random(-2,2);
 
   borders.leftx = 50;
   borders.rightx = width - 50;
@@ -291,4 +267,4 @@ function initializePositions() {
   paddle1.y = height / 2;
   paddle2.x = borders.rightx;
   paddle2.y = height / 2;
-}
+}  
