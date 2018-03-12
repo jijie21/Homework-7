@@ -262,10 +262,11 @@ function drawStuff() {
     textAlign(CENTER);
     text('press SPACEBAR to continue', width / 2, height / 2);
   } else if (GAMESTATE == 'GAMEOVER') {
-    ball.osc.amp(0.5);
-      ball.playing = true;
-      playing = true;
-      setTimeout(ball, 1000);
+    // ball.osc.amp(0.5);
+    //   ball.playing = true;
+    //   playing = true;
+    //   setTimeout(ball, 1000);
+    song.play();
     textAlign(CENTER);
     text('GAMEOVER', width / 2, height / 2); // text GAME OVER and WINNER!
   }
