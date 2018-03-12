@@ -1,5 +1,5 @@
 1.The potential energy that is stored in the form of an electric charge imbalance and capable of provoking electrons to flow through a conductor,
 2.As the electrons work their way through the thin metal filament of the lamp, they encounter more opposition to motion than they typically would in a thick piece of wire. This opposition to electric current depends on the type of material, its cross-sectional area, and its temperature.
-3.I think it is a closed circuit becuase there is energy flowing in the curcit.
+3.I think it is a closed circuit
 4.Battery by itself is open. When you put your leads on battery, you complete or close the circuit.A circuit is considered to be closed when electricity flows from an energy source to the desired endpoint of the circuit. 
 5.Yes
